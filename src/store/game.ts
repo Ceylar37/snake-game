@@ -1,4 +1,5 @@
 import {makeAutoObservable} from "mobx";
+import {gameInterval} from "../App";
 
 export const FIELD_WIDTH = 20
 export const FIELD_HEIGHT = 20
@@ -44,6 +45,7 @@ class Game {
     headCords = 185
     neckCords = 184
     direction: DirectionT = Directions.right
+    isFoodOnTheGround: boolean = false
 
     get nextHeadCell(): number {
         switch (this.direction) {
@@ -95,9 +97,10 @@ class Game {
                 break
             case -2:
                 this.length++
-                if (this.length === 400) {
+                if (this.length === 399) {
                     alert('win!')
                 }
+                this.isFoodOnTheGround = false
                 this.randomizeNewFood()
                 break
             default:
@@ -106,11 +109,14 @@ class Game {
     }
 
     randomizeNewFood() {
-        let [firstNewCellIdFood, secondNewCellIdFood] = getCords(Math.random() * 400)
-        while (this.field[firstNewCellIdFood][secondNewCellIdFood] !== -3) {
-            [firstNewCellIdFood, secondNewCellIdFood] = getCords(Math.random() * 400)
+        if (!this.isFoodOnTheGround) {
+            let [firstNewCellIdFood, secondNewCellIdFood] = getCords(Math.random() * 400)
+            while (this.field[firstNewCellIdFood][secondNewCellIdFood] !== -3) {
+                [firstNewCellIdFood, secondNewCellIdFood] = getCords(Math.random() * 400)
+            }
+            this.field[firstNewCellIdFood][secondNewCellIdFood] = -2
+            this.isFoodOnTheGround = true
         }
-        this.field[firstNewCellIdFood][secondNewCellIdFood] = -2
     }
 
     gameOver() {
@@ -121,6 +127,8 @@ class Game {
         this.headCords = 185
         this.neckCords = 184
         this.randomizeNewFood()
+        clearInterval(gameInterval)
+        this.isFoodOnTheGround = false
     }
 
 }

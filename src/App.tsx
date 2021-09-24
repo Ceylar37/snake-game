@@ -2,14 +2,14 @@ import React, {useEffect} from 'react';
 import './App.css'
 import game, {Directions, FIELD_WIDTH} from "./store/game";
 import {observer} from "mobx-react-lite";
-let gameInterval: any;
+export let gameInterval: any;
 const App = observer(() => {
     useEffect(() => {
         document.addEventListener('keydown', keyDownHandler)
     })
 
     const keyDownHandler = (e: KeyboardEvent) => {
-        switch (e.key) {
+        switch (e.key.toLowerCase()) {
             case 'a':
                 if (game.headCords - 1 !== game.neckCords) game.direction = Directions.left
                 return;
